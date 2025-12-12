@@ -1,0 +1,88 @@
+name: CI + Bump Manifests (single-repo example)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to commit back
+  packages: write
+  id-token: write
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+jobs:
+  build-and-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up QEMU (for cross-platform)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        id: build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+          file: ./Dockerfile
+
+      - name: Bump manifest image tag and commit
+        id: bump
+        run: |
+          set -euo pipefail
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          NEW_IMAGE="${IMAGE_NAME}:${SHORT_SHA}"
+          MANIFEST="./manifests/dev/deployment.yaml"
+
+          echo "Updating ${MANIFEST} -> image: ${NEW_IMAGE}"
+          if [ ! -f "${MANIFEST}" ]; then
+            echo "Manifest ${MANIFEST} not found"
+            exit 1
+          fi
+
+          # Replace the image: line (works if manifest contains "image: <value>")
+          sed -E -i "s#(image:[[:space:]]*).*#\1${NEW_IMAGE}#g" "${MANIFEST}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${MANIFEST}"
+          git commit -m "ci: bump image to ${SHORT_SHA} [skip ci]" || echo "No changes to commit"
+
+          # Push commit back to the same branch (requires contents: write permission)
+          BRANCH="${GITHUB_REF##*/}"
+          echo "Pushing changes to branch ${BRANCH}"
+          git push origin "HEAD:${BRANCH}"
+
+      # Optional: two-repo PR flow example (disabled by default)
+      - name: Create PR in config repo (two-repo example — disabled)
+        if: false
+        env:
+          CONFIG_REPO: your-org/config-repo
+          CONFIG_REPO_PAT: ${{ secrets.CONFIG_REPO_PAT }}
+        run: |
+          # This block is an example; set if you want to enable two-repo flow.
+          # Steps would:
+          # 1) git clone https://x-access-token:${CONFIG_REPO_PAT}@github.com/${CONFIG_REPO}.git
+          # 2) update manifests in that repo, push branch, open PR via gh or API
+          echo "Two-repo PR flow not enabled in this example"
