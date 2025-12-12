@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+        - name: demo-app
+          # CI will replace this image with ghcr.io/OWNER/REPO:<short-sha>
+          image: ghcr.io/OWNER/REPO:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: ENV
+              value: dev
