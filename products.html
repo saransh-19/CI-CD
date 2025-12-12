@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - Money Edge Financial Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* Same base styles as about.html */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .primary-blue { color: #007bff; }
+        .bg-primary-blue { background-color: #007bff; }
+        .shadow-custom {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .header-underline {
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            height: 4px;
+            width: 120px;
+            border-radius: 2px;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -10;
+        }
+        .content-container {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background-color: rgba(26, 26, 26, 0.6);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .dropdown-menu {
+            display: none;
+            right: 0;
+            top: 100%;
+            z-index: 50;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-200">
+    <canvas id="bg-canvas"></canvas>
+    <!-- Header (Same as about.html but with Products active) -->
+    <header class="bg-gray-950/70 backdrop-blur-lg shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center flex-wrap">
+            <a href="index.html" class="flex items-center">
+                <img src="images/Logo1.jpg" alt="Money Edge Financial Services Logo" class="h-12 mr-3">
+            </a>
+
+            <button id="menu-toggle" class="md:hidden block text-gray-300 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <div id="menu" class="hidden md:flex md:items-center md:w-auto w-full">
+                <div class="flex flex-col md:flex-row md:items-center md:space-x-6 text-lg mt-4 md:mt-0">
+                    <a href="index.html" class="text-gray-300 hover:text-white transition-colors py-2 md:py-0">Home</a>
+                    <a href="about.html" class="text-gray-300 hover:text-white transition-colors py-2 md:py-0">About</a>
+                    <div class="dropdown relative">
+                        <button class="flex items-center text-gray-300 hover:text-white transition-colors py-2 md:py-0" aria-expanded="false" aria-controls="plan-menu">
+                            Plan Your Goal
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="plan-menu" class="dropdown-menu absolute left-0 w-48 bg-gray-800 rounded-lg shadow-xl mt-2 py-2" role="menu">
+                            <a href="plan.html#retirement-planning" class="block px-4 py-2 text-gray-300 hover:bg-gray-700" role="menuitem">Retirement Planning</a>
+                            <a href="plan.html#child-education" class="block px-4 py-2 text-gray-300 hover:bg-gray-700" role="menuitem">Child's Education</a>
+                            <a href="plan.html#buying-house" class="block px-4 py-2 text-gray-300 hover:bg-gray-700" role="menuitem">Buying a House</a>
+                        </div>
+                    </div>
+                    <a href="products.html" class="text-blue-400 font-semibold transition-colors border-b-2 border-blue-400 py-2 md:py-0">Explore Products</a>
+                    <a href="learn.html" class="text-gray-300 hover:text-white transition-colors py-2 md:py-0">Learn</a>
+                    <a href="contact.html" class="text-gray-300 hover:text-white transition-colors py-2 md:py-0">Contact</a>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="signin.html" class="text-blue-400 font-semibold hover:text-blue-300 transition-colors">Login</a>
+                <a href="signup.html" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-lg transition-transform transform hover:scale-105">Free Consultation</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+        <div class="content-container">
+            <h1 class="text-4xl md:text-5xl font-bold text-center mb-12 font-['Playfair_Display'] text-white">Our Investment <span class="primary-blue">Products</span></h1>
+
+            <!-- Mutual Funds Section -->
+            <section id="mutual-funds" class="mb-20">
+                <h2 class="text-3xl font-bold text-white mb-8">Mutual Funds</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Abstract representation of financial growth and charts" class="rounded-lg shadow-lg w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-white mb-4">Expert-Selected Mutual Funds</h3>
+                        <p class="text-gray-300 mb-6">We offer a wide range of mutual fund options carefully selected by our expert team. Our recommendations are based on thorough research and analysis to match your investment goals.</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Equity Funds</h4>
+                                <p class="text-sm text-gray-400">Long-term wealth creation through stock market investments</p>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Debt Funds</h4>
+                                <p class="text-sm text-gray-400">Stable returns through fixed income securities</p>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Hybrid Funds</h4>
+                                <p class="text-sm text-gray-400">Balanced investment in equity and debt</p>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Index Funds</h4>
+                                <p class="text-sm text-gray-400">Track market indices for consistent returns</p>
+                            </div>
+                        </div>
+                        <a href="contact.html" class="inline-block mt-4 bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-colors">Invest Now</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insurance Section -->
+            <section id="insurance" class="mb-20">
+                <h2 class="text-3xl font-bold text-white mb-8">Insurance</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="order-2 md:order-1">
+                        <h3 class="text-2xl font-semibold text-white mb-4">Comprehensive Insurance Solutions</h3>
+                        <p class="text-gray-300 mb-6">Protect yourself and your loved ones with our comprehensive insurance solutions. We offer various insurance products to ensure complete financial security.</p>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Term Life Insurance</h4>
+                                <p class="text-sm text-gray-400">Maximum coverage at affordable premiums</p>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Health Insurance</h4>
+                                <p class="text-sm text-gray-400">Comprehensive medical coverage for you and your family</p>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">ULIPs</h4>
+                                <p class="text-sm text-gray-400">Combined benefits of insurance and investment</p>
+                            </div>
+                        </div>
+                        <a href="contact.html" class="inline-block mt-6 bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-colors">Get Protected</a>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <img src="https://images.unsplash.com/photo-1542840410-20cf35921604?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="A protective umbrella symbolizing insurance coverage" class="rounded-lg shadow-lg w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonds & NCDs Section -->
+            <section id="bonds" class="mb-10">
+                <h2 class="text-3xl font-bold text-white mb-8">Bonds & NCDs</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1624953587687-e271b7142f72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Stock market data on a screen representing bonds" class="rounded-lg shadow-lg w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-white mb-4">Fixed Income Securities</h3>
+                        <p class="text-gray-300 mb-6">Looking for steady and reliable returns? Our selection of bonds and Non-Convertible Debentures (NCDs) offers stable income with various tenure options.</p>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Government Bonds</h4>
+                                <p class="text-sm text-gray-400">Safe and secure investment backed by the government</p>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Corporate Bonds</h4>
+                                <p class="text-sm text-gray-400">Higher yields from established companies</p>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg shadow">
+                                <h4 class="font-semibold text-white mb-2">Tax-Free Bonds</h4>
+                                <p class="text-sm text-gray-400">Enjoy tax benefits while earning steady returns</p>
+                            </div>
+                        </div>
+                        <a href="contact.html" class="inline-block mt-6 bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-colors">Explore Options</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer (Same as about.html) -->
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-xl font-bold text-white mb-4">Money Edge Financial Services</h4>
+                    <p class="text-sm">
+                        Securing your financial future through expert advice and strategic, goal-oriented investment solutions.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="about.html" class="hover:text-blue-400 transition-colors">Disclosures</a></li>
+                        <li><a href="about.html" class="hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                        <li><a href="about.html" class="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="about.html" class="hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about.html" class="hover:text-blue-400 transition-colors">KIMS/SAI/SID</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Help</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="contact.html" class="hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="about.html#team" class="hover:text-blue-400 transition-colors">Our Team</a></li>
+                        <li><a href="about.html#partners" class="hover:text-blue-400 transition-colors">Our Partners</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Contact Info</h4>
+                    <p class="text-sm mb-2">
+                        <span class="font-medium text-white">Grievance Officer:</span> Rishika Jain
+                    </p>
+                    <p class="text-sm mb-2">
+                        <span class="font-medium text-white">Contact:</span> 9648793317
+                    </p>
+                    <p class="text-sm">
+                        <span class="font-medium text-white">Email:</span> <a href="mailto:contact@moneyedgefinancialservices.com">contact@moneyedgefinancialservices.com</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
+                <p>&copy; 2025 Money Edge Financial Services. All rights reserved.</p>
+                <p class="mt-2 text-xs">
+                    AMFI Registered Mutual Fund Distributor | ARN- 172057 | Initial Date of Registration: 28/8/2020 | Current Validity: 27/8/2026.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
